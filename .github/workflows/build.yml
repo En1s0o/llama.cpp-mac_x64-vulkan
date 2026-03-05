@@ -3,11 +3,12 @@ name: Build llama.cpp with Vulkan on macOS x64
 on:
   workflow_dispatch: # Allow manual trigger
   schedule:
-    - cron: "0 16 * * *" # UTC 16:00 daily, which is 12:00 Beijing time
+    - cron: "0 16 * * *" # UTC 16:00 daily, which is 00:00 Beijing time
 
 env:
-  LLAMACPP_TAG: b7902
+  LLAMACPP_TAG: b8201
   MOLTEN_VK_TAG: v1.4.1
+  MOLTEN_VK_INFO: ""
 
 jobs:
   build-macos-vulkan:
@@ -16,20 +17,24 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
+          brew update
           brew install libomp vulkan-headers glslang molten-vk shaderc vulkan-tools
 
-      - name: Download and extract specified MoltenVK
-        run: |
-          gh release download ${{ env.MOLTEN_VK_TAG }} --repo KhronosGroup/MoltenVK --pattern "MoltenVK-macos.tar"
-          tar -xf MoltenVK-macos.tar
-          mv MoltenVK/MoltenVK/dynamic/dylib/macOS/libMoltenVK.dylib $(brew --prefix molten-vk)/lib/libMoltenVK.dylib
-          mv MoltenVK/MoltenVK/include $(brew --prefix molten-vk)/include
-        env:
-          GH_TOKEN: ${{ github.token }}
+      # - name: Download and extract specified MoltenVK
+      #   run: |
+      #     gh release download ${{ env.MOLTEN_VK_TAG }} --repo KhronosGroup/MoltenVK --pattern "MoltenVK-macos.tar"
+      #     tar -xf MoltenVK-macos.tar
+      #     mv MoltenVK/MoltenVK/dynamic/dylib/macOS/libMoltenVK.dylib $(brew --prefix molten-vk)/lib/libMoltenVK.dylib
+      #     mv MoltenVK/MoltenVK/include $(brew --prefix molten-vk)/include
+      #   env:
+      #     GH_TOKEN: ${{ github.token }}
 
       - name: Verify Vulkan installation
         run: |
           vulkaninfo --summary || true
+          echo "MOLTEN_VK_INFO<<EOF" >> $GITHUB_ENV
+          brew list --versions molten-vk >> $GITHUB_ENV
+          echo "EOF" >> $GITHUB_ENV
 
       - name: Get latest llama.cpp tag
         run: |
@@ -97,7 +102,7 @@ jobs:
         with:
           tag_name: ${{ env.LLAMACPP_TAG }}
           name: ${{ env.LLAMACPP_TAG }}
-          body: https://github.com/ggml-org/llama.cpp/releases/tag/${{ env.LLAMACPP_TAG }} with molten-vk ${{ env.MOLTEN_VK_TAG }}
+          body: https://github.com/ggml-org/llama.cpp/releases/tag/${{ env.LLAMACPP_TAG }} ${{ env.MOLTEN_VK_INFO }}
           files: llama-${{ env.LLAMACPP_TAG }}-bin-macos-x64-vulkan.zip
           draft: false
           prerelease: false
