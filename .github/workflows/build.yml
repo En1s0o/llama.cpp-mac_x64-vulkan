@@ -17,7 +17,8 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
-          brew update
+          #brew update
+          export HOMEBREW_NO_AUTO_UPDATE=1
           brew install libomp vulkan-headers glslang molten-vk shaderc vulkan-tools
 
       # - name: Download and extract specified MoltenVK
@@ -69,7 +70,7 @@ jobs:
             -DCMAKE_INSTALL_RPATH="@loader_path" \
             -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
             -DGGML_RPC=ON \
-            -DCMAKE_OSX_DEPLOYMENT_TARGET=14.4
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=15.7
 
       - name: Build
         run: |
