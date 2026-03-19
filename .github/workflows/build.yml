@@ -39,7 +39,7 @@ jobs:
       - name: Get latest llama.cpp tag
         run: |
           # Get the latest tag
-          LATEST_TAG="b8394" #$(gh release -R "ggml-org/llama.cpp" list --limit 1 --json tagName -q ".[0].tagName")
+          LATEST_TAG=$(gh release -R "ggml-org/llama.cpp" list --limit 1 --json tagName -q ".[0].tagName")
 
           # If fetching fails, use default
           if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" = "null" ]; then
@@ -69,7 +69,7 @@ jobs:
             -DCMAKE_INSTALL_RPATH="@loader_path" \
             -DCMAKE_BUILD_WITH_INSTALL_RPATH=ON \
             -DGGML_RPC=ON \
-            -DCMAKE_OSX_DEPLOYMENT_TARGET=15.7
+            -DCMAKE_OSX_DEPLOYMENT_TARGET=15.0
 
       - name: Build
         run: |
