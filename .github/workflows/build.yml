@@ -86,7 +86,7 @@ jobs:
 
           install_name_tool -change /usr/local/opt/molten-vk/lib/libMoltenVK.dylib \
           ./libMoltenVK.dylib build/bin/libggml-vulkan.dylib
-          install_name_tool -change "/usr/local/Cellar/llvm@18/18.1.8/lib/libunwind.1.0.dylib" libunwind.1.dylib build/bin/libggml-vulkan.dylib
+          install_name_tool -change "/usr/local/Cellar/llvm@18/18.1.8/lib/libunwind.1.0.dylib" ./libunwind.1.dylib build/bin/libggml-vulkan.dylib
 
           # Create zip archive
           zip -r llama-${{ env.LLAMACPP_TAG }}-bin-macos-x64-vulkan.zip ./build/bin/*
