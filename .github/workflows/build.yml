@@ -17,8 +17,7 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
-          #brew update
-          export HOMEBREW_NO_AUTO_UPDATE=1
+          brew update
           brew install libomp vulkan-headers glslang molten-vk shaderc vulkan-tools
 
       # - name: Download and extract specified MoltenVK
@@ -87,6 +86,8 @@ jobs:
 
           install_name_tool -change /usr/local/opt/molten-vk/lib/libMoltenVK.dylib \
           ./libMoltenVK.dylib build/bin/libggml-vulkan.dylib
+          install_name_tool -change "/usr/local/opt/llvm@18/lib/libunwind.1.dylib" "@loader_path/libunwind.1.dylib" "$file" 2>/dev/null || true
+          install_name_tool -change "$(brew --prefix llvm@18)/lib/libunwind.1.dylib" "@loader_path/libunwind.1.dylib" "$file" 2>/dev/null || true
 
           # Create zip archive
           zip -r llama-${{ env.LLAMACPP_TAG }}-bin-macos-x64-vulkan.zip ./build/bin/*
