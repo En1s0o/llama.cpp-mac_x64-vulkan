@@ -6,7 +6,7 @@ on:
     - cron: "0 16 * * *" # UTC 16:00 daily, which is 00:00 Beijing time
 
 env:
-  LLAMACPP_TAG: b8201
+  LLAMACPP_TAG: b8407
   MOLTEN_VK_TAG: v1.4.1
   MOLTEN_VK_INFO: ""
 
@@ -39,7 +39,7 @@ jobs:
       - name: Get latest llama.cpp tag
         run: |
           # Get the latest tag
-          LATEST_TAG=$(gh release -R "ggml-org/llama.cpp" list --limit 1 --json tagName -q ".[0].tagName")
+          LATEST_TAG="b8407" #$(gh release -R "ggml-org/llama.cpp" list --limit 1 --json tagName -q ".[0].tagName")
 
           # If fetching fails, use default
           if [ -z "$LATEST_TAG" ] || [ "$LATEST_TAG" = "null" ]; then
