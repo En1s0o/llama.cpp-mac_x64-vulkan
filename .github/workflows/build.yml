@@ -88,12 +88,9 @@ jobs:
           ./libMoltenVK.dylib build/bin/libggml-vulkan.dylib
 
           cp "/usr/local/Cellar/llvm@18/18.1.8/lib/libunwind.1.0.dylib" build/bin/libunwind.1.dylib 2>/dev/null || true
-          install_name_tool -change /usr/local/opt/llvm@18/lib/libunwind.1.dylib \
-                  @executable_path/libunwind.1.dylib \
-                  llama-cli
-          install_name_tool -change /usr/local/opt/llvm@18/lib/libunwind.1.dylib \
-                  @executable_path/libunwind.1.dylib \
-                  llama-server
+          for f in build/bin/*; do
+            install_name_tool -change /usr/local/opt/llvm@18/lib/libunwind.1.dylib @loader_path/libunwind.1.dylib "$f" || true
+          done
 
           # Create zip archive
           zip -r llama-${{ env.LLAMACPP_TAG }}-bin-macos-x64-vulkan.zip ./build/bin/*
